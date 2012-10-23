@@ -26,6 +26,7 @@ function init() {
       var tab = history_pages[i];
       sigInst.addNode(tab.id.toString(), {
         'label': tab.url,
+        'color': '#eee',
         'x': Math.random(),
         'y': Math.random()
       });
@@ -54,7 +55,7 @@ function init() {
       
       // stop altas afer 4 seconds, makes it more friendly for background tabs
       setTimeout(function(){toggleAtlas();}, 4000);
-    }, 500);
+    }, 100);
     // get rid of this timeout
   });
 }
