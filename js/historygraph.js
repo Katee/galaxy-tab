@@ -15,7 +15,7 @@ function init() {
       defaultEdgeType: 'curve'
     }).graphProperties({
       minNodeSize: 0.5,
-      maxNodeSize: 5,
+      maxNodeSize: 3,
       minEdgeSize: 1,
       maxEdgeSize: 2
     }).mouseProperties({
@@ -26,7 +26,8 @@ function init() {
       var tab = history_pages[i];
       sigInst.addNode(tab.id.toString(), {
         'label': tab.url,
-        'color': '#eee',
+        // color the node based on it's host
+        'color': '#' + md5($.url(tab.url).attr('host')).slice(0,6),
         'x': Math.random(),
         'y': Math.random()
       });
@@ -55,7 +56,7 @@ function init() {
       
       // stop altas afer 4 seconds, makes it more friendly for background tabs
       setTimeout(function(){toggleAtlas();}, 4000);
-    }, 100);
+    }, 1000);
     // get rid of this timeout
   });
 }
