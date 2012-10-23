@@ -51,6 +51,9 @@ function init() {
       });
       sigInst.draw();
       toggleAtlas();
+      
+      // stop altas afer 4 seconds, makes it more friendly for background tabs
+      setTimeout(function(){toggleAtlas();}, 4000);
     }, 500);
     // get rid of this timeout
   });
