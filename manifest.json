@@ -1,0 +1,12 @@
+{
+  "name": "Tab Explorer",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "",
+  "chrome_url_overrides": {
+    "newtab": "historygraph.html"
+  },
+  "permissions": [
+    "history"
+  ]
+}
