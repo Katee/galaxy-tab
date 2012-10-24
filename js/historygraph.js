@@ -16,8 +16,8 @@ function init() {
     }).graphProperties({
       minNodeSize: 0.5,
       maxNodeSize: 5,
-      minEdgeSize: 1,
-      maxEdgeSize: 2
+      minEdgeSize: 3,
+      maxEdgeSize: 4
     }).mouseProperties({
         maxRatio: 4
     });
