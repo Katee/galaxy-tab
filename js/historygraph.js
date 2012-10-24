@@ -54,7 +54,7 @@ function init() {
       toggleAtlas();
       
       // stop altas afer 4 seconds, makes it more friendly for background tabs
-      setTimeout(function(){toggleAtlas();}, 4000);
+      setTimeout(function(){toggleAtlas();}, 14000);
     }, 100);
     // get rid of this timeout
   });
