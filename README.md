@@ -4,10 +4,10 @@ In an effort to better understand the what our browsing habits look like, we cra
 
 ## Usage
 
-Download the repo to wherever, and load it into Chrome as per their charming tutorial: <http://developer.chrome.com/extensions/getstarted.html#load>
+Download the repo to wherever, and load it into Chrome as per their charming [tutorial.](http://developer.chrome.com/extensions/getstarted.html#load)
 
 ## Todo
 
-*Add a bootstrap bar with some buttons for manipulating the graph.
-*Label nodes with site names, and make hoverable boxes show the url.
-*Perhaps eventually involve a database somewhere in here for persistant/portable storage of your history graph.
+* Add a bootstrap bar with some buttons for manipulating the graph.
+* Label nodes with site names, and make hoverable boxes show the url.
+* Perhaps eventually involve a database somewhere in here for persistant/portable storage of your history graph.
