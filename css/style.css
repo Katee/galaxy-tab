@@ -12,7 +12,3 @@ html, body, #canvas {
   z-index: 0;
 }
 
-a {
-  position: absolute;
-  color: #fff;
-}
