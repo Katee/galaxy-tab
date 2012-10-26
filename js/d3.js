@@ -17,20 +17,10 @@ chrome.history.search({text: ""}, function (history_pages){
     history_items[history_pages[i].id] = history_pages[i];
     var node = {
       name: tab.url,
-      history_id: tab.id,
-      group: 1
+      history_id: tab.id
     };
     nodes.push(node);
-/*
-      links.push({
-      source : 0,
-      target : node,
-      weight : .1
-    });
-*/
   }
-  console.log("links");
-  console.log(links);
 
   $.each(history_pages, function(index, history_page) {
     chrome.history.getVisits({url: history_page.url}, function (visitItems) {
@@ -44,22 +34,17 @@ chrome.history.search({text: ""}, function (history_pages){
     $.each(all_visits, function(key, visit){
       try {
         var refervisit = all_visits[visit.referringVisitId];
-        if (links.length < 10 && refervisit !== null && history_items[visit.id].d3_id !== history_items[refervisit.id].d3_id) {
+        if (refervisit !== null && history_items[visit.id].d3_id !== history_items[refervisit.id].d3_id) {
           links.push({
-            source : history_items[visit.id].d3_id,
-            target : history_items[refervisit.id].d3_id,
-            value: 1
+              source: Number(history_items[visit.id].d3_id),
+              target: Number(history_items[refervisit.id].d3_id)
           });
         }
       } catch (e) {}
     });
-    console.log("nodes");
-    console.log(nodes);
-    console.log("links");
-    console.log(links);
 
     showGraph();
-  }, 500);
+  }, 100);
 });
 
 function showGraph() {
