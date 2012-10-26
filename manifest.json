@@ -4,7 +4,7 @@
   "manifest_version": 2,
   "description": "",
   "chrome_url_overrides": {
-    "history": "historygraph.html"
+    "newtab": "historygraph.html"
   },
   "permissions": [
     "history"

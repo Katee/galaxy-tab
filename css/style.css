@@ -1,14 +1,21 @@
-html, body, #canvas {
+html, body, svg {
   height: 100%;
   width: 100%;
   padding: 0;
   margin: 0;
-  background: #222;
   font-family: sans-serif;
+  overflow: hidden;
 }
 
-#canvas {
-  position: absolute;
-  z-index: 0;
+circle.node {
+  cursor: pointer;
+  fill: #000;
+  stroke: #000;
+  stroke-width: .5px;
 }
 
+line.link {
+  fill: none;
+  stroke: #9ecae1;
+  stroke-width: 1.5px;
+}

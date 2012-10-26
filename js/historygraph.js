@@ -1,79 +1,86 @@
+var w = $(window).width(),
+    h = $(window).height();
+
+var svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+
+var nodes = [];
+var links = [];
 var all_visits = {};
-var sigInst;
+var history_items = {};
 
-if (document.addEventListener) {
-  document.addEventListener("DOMContentLoaded", init, false);
-} else {
-  window.onload = init;
-}
+var force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
 
-function init() {
-  chrome.history.search({text: ""}, function (history_pages){
-    sigInst = sigma.init(document.getElementById("canvas")).drawingProperties({
-      defaultLabelSize: 14,
-      labelThreshold: 6,
-      defaultEdgeType: 'curve'
-    }).graphProperties({
-      minNodeSize: 0.5,
-      maxNodeSize: 5,
-      minEdgeSize: 3,
-      maxEdgeSize: 4
-    }).mouseProperties({
-        maxRatio: 4
+chrome.history.search({text: ""}, function (history_pages){
+  for (var i in history_pages) {
+    var tab = history_pages[i];
+    history_pages[i].d3_id = i;
+    history_items[history_pages[i].id] = history_pages[i];
+    var node = {
+      name: tab.url,
+      history_id: tab.id
+    };
+    nodes.push(node);
+  }
+
+  $.each(history_pages, function(index, history_page) {
+    chrome.history.getVisits({url: history_page.url}, function (visitItems) {
+      for (j in visitItems) {
+        all_visits[visitItems[j].visitId] = visitItems[j];
+      }
+    });
+  });
+
+  setTimeout(function(){
+    $.each(all_visits, function(key, visit){
+      try {
+        var refervisit = all_visits[visit.referringVisitId];
+        if (refervisit !== null && history_items[visit.id].d3_id !== history_items[refervisit.id].d3_id) {
+          links.push({
+              source: Number(history_items[visit.id].d3_id),
+              target: Number(history_items[refervisit.id].d3_id)
+          });
+        }
+      } catch (e) {}
     });
 
-    for (var i in history_pages) {
-      var tab = history_pages[i];
-      sigInst.addNode(tab.id.toString(), {
-        'label': tab.url,
-        // color the node based on it's host
-        'color': '#' + md5($.url(tab.url).attr('host')).slice(0,6),
-        'x': Math.random(),
-        'y': Math.random()
-      });
-    }
-
-    for (i in history_pages) {
-      tab = history_pages[i];
-      chrome.history.getVisits({url: tab.url}, function (visitItems) {
-        for (j in visitItems) {
-          all_visits[visitItems[j].visitId] = visitItems[j];
-        }
-      });
-    }
-
-    setTimeout(function(){
-      $.each(all_visits, function(key, visit){
-        try {
-          var refervisit = all_visits[visit.referringVisitId];
-          if (refervisit !== null) {
-            sigInst.addEdge(visit.id + "," + refervisit.id, visit.id, refervisit.id);
-          }
-        } catch (e) {}
-      });
-      sigInst.draw();
-      toggleAtlas();
-      
-      // stop altas afer 4 seconds, makes it more friendly for background tabs
-      setTimeout(function(){toggleAtlas();}, 4000);
-    }, 1000);
-    // get rid of this timeout
-  });
-}
-
-var isRunning = false;
-function toggleAtlas() {
-  if(isRunning){
-    isRunning = false;
-    sigInst.stopForceAtlas2();
-  }else{
-    isRunning = true;
-    sigInst.startForceAtlas2();
-  }
-}
-
-$(document).ready(function(){
-  $('body').on('click', 'a[href=#toggleAtlas]', function(){
-    toggleAtlas();
-  });
+    showGraph();
+  }, 500);
 });
+
+function showGraph() {
+  force.nodes(nodes).links(links).start();
+
+  var link = svg.selectAll("line.link").data(links)
+    .enter().append("line")
+      .attr("class", "link")
+      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+
+  var node = svg.selectAll("circle.node")
+      .data(nodes)
+    .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 5)
+      .call(force.drag)
+      .style("fill", nodeColor)
+      .on("click", click);
+
+  node.append("title").text(function(d) { return d.name; });
+
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  });
+}
+
+function click(d) {
+  update(d);
+}
+
+function nodeColor(d) {
+  return "#" + md5($.url(d.name).attr('host')).slice(0,6);
+}
