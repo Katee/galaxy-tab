@@ -44,7 +44,7 @@ chrome.history.search({text: ""}, function (history_pages){
     });
 
     showGraph();
-  }, 100);
+  }, 500);
 });
 
 function showGraph() {
@@ -60,7 +60,9 @@ function showGraph() {
     .enter().append("circle")
       .attr("class", "node")
       .attr("r", 5)
-      .call(force.drag);
+      .call(force.drag)
+      .style("fill", nodeColor)
+      .on("click", click);
 
   node.append("title").text(function(d) { return d.name; });
 
@@ -73,4 +75,12 @@ function showGraph() {
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
+}
+
+function click(d) {
+  update(d);
+}
+
+function nodeColor(d) {
+  return "#" + md5($.url(d.name).attr('host')).slice(0,6);
 }
