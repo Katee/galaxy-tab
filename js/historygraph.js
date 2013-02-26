@@ -10,8 +10,7 @@ var history_items = {};
 
 var force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
 
-chrome.history.search({text: ""}, function (history_pages){
-  console.log(history_pages.length);
+chrome.history.search({text: "", maxResults: 0}, function (history_pages){
   $.each(history_pages, function(i, history_page){
     var tab = history_page;
     history_pages[i].d3_id = i;
