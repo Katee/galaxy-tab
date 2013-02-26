@@ -11,8 +11,9 @@ var history_items = {};
 var force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
 
 chrome.history.search({text: ""}, function (history_pages){
-  for (var i in history_pages) {
-    var tab = history_pages[i];
+  console.log(history_pages.length);
+  $.each(history_pages, function(i, history_page){
+    var tab = history_page;
     history_pages[i].d3_id = i;
     history_items[history_pages[i].id] = history_pages[i];
     var node = {
@@ -20,17 +21,22 @@ chrome.history.search({text: ""}, function (history_pages){
       history_id: tab.id
     };
     nodes.push(node);
-  }
-
-  $.each(history_pages, function(index, history_page) {
-    chrome.history.getVisits({url: history_page.url}, function (visitItems) {
-      for (j in visitItems) {
-        all_visits[visitItems[j].visitId] = visitItems[j];
-      }
-    });
   });
 
-  setTimeout(function(){
+  Q.all(
+    $.map(history_pages, function(history_page){
+      var deferred = Q.defer();
+      chrome.history.getVisits({url: history_page.url}, function(historyItems){
+        deferred.resolve(historyItems);
+      });
+      return deferred.promise;
+    })
+  ).then(function(historyItems){
+    $.map(historyItems, function(visitItems, i){
+      $.map(visitItems, function(el, i){
+        all_visits[el.visitId] = visitItems[i];
+      });
+    });
     $.each(all_visits, function(key, visit){
       try {
         var refervisit = all_visits[visit.referringVisitId];
@@ -42,9 +48,9 @@ chrome.history.search({text: ""}, function (history_pages){
         }
       } catch (e) {}
     });
-
+  }).then(function(){
     showGraph();
-  }, 500);
+  });
 });
 
 function showGraph() {
