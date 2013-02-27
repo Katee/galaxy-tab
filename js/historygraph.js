@@ -1,16 +1,12 @@
-var w = $(window).width(),
-    h = $(window).height();
-
-var svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+var svg, w, h, force;
 
 var nodes = [];
 var links = [];
 var all_visits = {};
 var history_items = {};
 
-var force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
-
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
+  console.log(history_pages.length);
   $.each(history_pages, function(i, history_page){
     var tab = history_page;
     history_pages[i].d3_id = i;
@@ -53,6 +49,10 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
 });
 
 function showGraph() {
+  w = $(window).width();
+  h = $(window).height();
+  svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+  force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
   force.nodes(nodes).links(links).start();
 
   var link = svg.selectAll("line.link").data(links)
