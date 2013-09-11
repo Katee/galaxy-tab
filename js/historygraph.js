@@ -84,7 +84,7 @@ function showGraph() {
       .attr("r", conf.nodeRadius)
       .call(force.drag)
       .style("fill", nodeColor)
-      .on("click", click);
+      .on("click", nodeClick);
 
   node.append("title").text(function(d) { return d.name; });
 
@@ -99,8 +99,12 @@ function showGraph() {
   });
 }
 
-function click(d) {}
+// open node's link in a new tab or window
+function nodeClick(d) {
+  window.open(d.name, '_blank');
+}
 
+// Use the first six characters of md5 of the nodes domain to create a color
 function nodeColor(d) {
   return "#" + md5($.url(d.name).attr('host')).slice(0,6);
 }
