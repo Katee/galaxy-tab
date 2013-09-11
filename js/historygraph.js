@@ -11,7 +11,6 @@ var conf = {
 };
 
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
-  console.log(history_pages.length);
   $.each(history_pages, function(i, history_page){
     var tab = history_page;
     history_pages[i].d3_id = i;
@@ -87,9 +86,7 @@ function showGraph() {
   });
 }
 
-function click(d) {
-  update(d);
-}
+function click(d) {}
 
 function nodeColor(d) {
   return "#" + md5($.url(d.name).attr('host')).slice(0,6);
