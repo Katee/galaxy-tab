@@ -6,8 +6,8 @@ var all_visits = {};
 var history_items = {};
 
 var conf = {
-  charge: -80,
-  distance: 30,
+  charge: -70,
+  distance: 25,
   linkMinDarkness: 0.5
 };
 
