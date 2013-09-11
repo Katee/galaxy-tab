@@ -7,7 +7,8 @@ var history_items = {};
 
 var conf = {
   charge: -80,
-  distance: 30
+  distance: 30,
+  linkMinDarkness: 0.5
 };
 
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
@@ -39,11 +40,18 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
     $.each(all_visits, function(key, visit){
       try {
         var refervisit = all_visits[visit.referringVisitId];
-        if (refervisit !== null && history_items[visit.id].d3_id !== history_items[refervisit.id].d3_id) {
+        if (refervisit === null || history_items[visit.id].d3_id === history_items[refervisit.id].d3_id) return;
+        var source = Number(history_items[visit.id].d3_id);
+        var target = Number(history_items[refervisit.id].d3_id);
+        var existingLink = _.find(links, function(a){return a.source == source && a.target == target});
+        if (existingLink == undefined) {
           links.push({
-              source: Number(history_items[visit.id].d3_id),
-              target: Number(history_items[refervisit.id].d3_id)
+            source: Number(history_items[visit.id].d3_id),
+            target: Number(history_items[refervisit.id].d3_id),
+            count: 1
           });
+        } else {
+          existingLink.count++;
         }
       } catch (e) {}
     });
@@ -59,10 +67,14 @@ function showGraph() {
   force = d3.layout.force().charge(conf.charge).linkDistance(conf.distance).size([w, h]);
   force.nodes(nodes).links(links).start();
 
+  var biggest = _.last(_.sortBy(links, function(a){return a.count;}));
+  var range = (1 - conf.linkMinDarkness) / biggest.count;
+
   var link = svg.selectAll("line.link").data(links)
     .enter().append("line")
       .attr("class", "link")
-      .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      .style("stroke-width", function(d) { return Math.sqrt(d.count); })
+      .style("stroke", function(d) { var color = (d.count * range + conf.linkMinDarkness); return 'rgba(0,0,0,'+color+')'; });
 
   var node = svg.selectAll("circle.node")
       .data(nodes)
