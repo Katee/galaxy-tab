@@ -8,7 +8,8 @@ var history_items = {};
 var conf = {
   charge: -70,
   distance: 25,
-  linkMinDarkness: 0.5
+  linkMinDarkness: 0.5,
+  nodeRadius: 5
 };
 
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
@@ -80,7 +81,7 @@ function showGraph() {
       .data(nodes)
     .enter().append("circle")
       .attr("class", "node")
-      .attr("r", 5)
+      .attr("r", conf.nodeRadius)
       .call(force.drag)
       .style("fill", nodeColor)
       .on("click", click);
