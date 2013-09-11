@@ -5,6 +5,11 @@ var links = [];
 var all_visits = {};
 var history_items = {};
 
+var conf = {
+  charge: -80,
+  distance: 30
+};
+
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
   console.log(history_pages.length);
   $.each(history_pages, function(i, history_page){
@@ -52,7 +57,7 @@ function showGraph() {
   w = $(window).width();
   h = $(window).height();
   svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
-  force = d3.layout.force().charge(-120).linkDistance(30).size([w, h]);
+  force = d3.layout.force().charge(conf.charge).linkDistance(conf.distance).size([w, h]);
   force.nodes(nodes).links(links).start();
 
   var link = svg.selectAll("line.link").data(links)
