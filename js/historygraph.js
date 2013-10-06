@@ -91,6 +91,7 @@ function showGraph() {
       .on("click", nodeClick);
 
   node.append("title").text(function(d) { return d.name; });
+  link.append("title").text(function(d) { return d.count + (d.count == 1 ? " visit between" : " visits between");});
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
