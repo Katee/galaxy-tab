@@ -58,13 +58,17 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
     });
   }).then(function(){
     showGraph();
+    // load the translate/scale if any
+    chrome.storage.local.get('svg-transform', function(data) {
+      svg.attr("transform", data['svg-transform']);
+    });
   });
 });
 
 function showGraph() {
   w = $(window).width();
   h = $(window).height();
-  svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+  svg = d3.select("body").append("svg:svg").attr("width", w).attr("height", h).call(d3.behavior.zoom().on("zoom", redraw)).append("g");
   force = d3.layout.force().charge(conf.charge).linkDistance(conf.distance).size([w, h]);
   force.nodes(nodes).links(links).start();
 
@@ -107,4 +111,13 @@ function nodeClick(d) {
 // Use the first six characters of md5 of the nodes domain to create a color
 function nodeColor(d) {
   return "#" + md5($.url(d.name).attr('host')).slice(0,6);
+}
+
+// change the translation and scale and save to local storage
+function redraw() {
+  var transform = "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")";
+  svg.attr("transform", transform);
+  chrome.storage.local.set({'svg-transform': transform}, function() {
+    console.log(transform);
+  });
 }
