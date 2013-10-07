@@ -90,8 +90,23 @@ function showGraph() {
       .style("fill", nodeColor)
       .on("click", nodeClick);
 
-  node.append("title").text(function(d) { return d.name; });
-  link.append("title").text(function(d) { return d.count + [(d.count == 1 ? " visit between" : " visits between"), d.target.name, "and", d.source.name].join(" ");});
+  $('svg circle').tipsy({ 
+    gravity: 's', 
+    html: true, 
+    title: function (d) {
+      var d = this.__data__;
+      return d.name;
+    }
+  });
+
+  $('svg line').tipsy({ 
+    gravity: 's', 
+    html: true, 
+    title: function(d) { 
+      var d = this.__data__;
+      return d.count + [(d.count == 1 ? " visit between" : " visits between"), d.target.name, "and", d.source.name].join(" ");
+    }
+  });
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
