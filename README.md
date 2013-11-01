@@ -6,7 +6,7 @@ Shows your Chrome browsing history as a graph where each page is a node. Links a
 
 ## Usage
 
-Add the extension to Chrome per [Google's instructions](http://developer.chrome.com/extensions/getstarted.html#unpacked).
+Clone the repository and load it as an unpacked extension in Chrome per [Google's instructions](http://developer.chrome.com/extensions/getstarted.html#unpacked).
 
 ## Known Issues
 
