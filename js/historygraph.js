@@ -90,19 +90,19 @@ function showGraph() {
       .style("fill", nodeColor)
       .on("click", nodeClick);
 
-  $('svg circle').tipsy({ 
-    gravity: 's', 
-    html: true, 
+  $('svg circle').tipsy({
+    gravity: 's',
+    html: true,
     title: function (d) {
       var d = this.__data__;
       return d.name;
     }
   });
 
-  $('svg line').tipsy({ 
-    gravity: 's', 
-    html: true, 
-    title: function(d) { 
+  $('svg line').tipsy({
+    gravity: 's',
+    html: true,
+    title: function(d) {
       var d = this.__data__;
       return d.count + [(d.count == 1 ? " visit between" : " visits between"), d.target.name, "and", d.source.name].join(" ");
     }
