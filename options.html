@@ -1,0 +1,35 @@
+<html>
+  <head><title>Options - Tab Explorer</title></head>
+  <body>
+    <h1>Options - Tab Explorer</h1>
+    <table id="options">
+      <tr>
+        <td><label for="conf_charge">Charge</td>
+        <td><input id="conf_charge" type="range" value="-70" min="-200" max="60" step="5"></td>
+      </tr>
+      <tr>
+        <td><label for="conf_distance">Distance</td>
+        <td><input id="conf_distance" type="range" value="25" min="0" max="50" step="1"></td>
+      </tr>
+      <tr>
+        <td><label for="conf_linkmindark">Link Minimum Darkness</td>
+        <td><input id="conf_linkmindark" type="range" value="0.5" min="0" max="1" step="0.05"></td>
+      </tr>
+      <tr>
+        <td><label for="conf_noderadius">Node Radius</td>
+        <td><input id="conf_noderadius" type="range" value="5" min="0" max="10" step="0.5"></td>
+      </tr>
+      <tr>
+        <td><label for="opt_showsingletons">Show unlinked nodes?</label></td>
+        <td><input id="opt_showsingletons" type="checkbox"></td>
+      </tr>
+    </table>
+    <p>
+      <div id="status"></div>
+      <button id="save">Save</button>
+    </p>
+  </body>
+  <script type="text/javascript" src="js/lib/jquery.min.js"></script>
+  <script type="text/javascript" src="js/options-reader.js"></script>
+  <script type="text/javascript" src="js/options.js"></script>
+</html>
