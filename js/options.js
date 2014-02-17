@@ -45,12 +45,12 @@ function add_widget_to_table(table, name, conf){
 function make_widget(name, conf){
     var w = undefined;
     switch(conf.widget){
-        case RangeWidget:
-            w = new conf.widget(name, conf.value, conf.min, conf.max, conf.step);
+        case 'RangeWidget':
+            w = new RangeWidget(name, conf.value, conf.min, conf.max, conf.step);
             monitor(w);
             break;
-        case BoolWidget:
-            w = new conf.widget(name, conf.value);
+        case 'BoolWidget':
+            w = new BoolWidget(name, conf.value);
             break;
         default:
             throw "append_widget: Not implemented (yet!) for the given widget type.";
