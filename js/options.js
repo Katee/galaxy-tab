@@ -1,22 +1,27 @@
 // (main) An options page for galaxy tab.
 // uses: js/defaults.js
 
-state = {};
+state = { widgets: {}
+        };
 
-// Update options page to display the configuration object
-function restore_options() {
-    var table = $('table#options'),
-        options = read_options(),
-        widgets = {};
+// Update the options page to display all the options widgets with their default values.
+// If a configuration object is given, use it to set the options instead of the defaults.
+// Optional<Object> -> void
+function restore_options(conf) {
+    var table = $('table#options');
     // build widgets and set their values
     for(var name in options_config){
         if(options_config.hasOwnProperty(name)){
-            widgets[name] = add_widget_to_table(table, name, options_config[name]);
-            widgets[name].write(options[name]);
+            // create a widget if one doesn't exist
+            if(!state.widgets.hasOwnProperty(name)){
+                state.widgets[name] = add_widget_to_table(table, name, options_config[name]);
+            }
+            // if the conf object is given and has this property, use its value for the widget
+            state.widgets[name].write( (conf && conf.hasOwnProperty(name))
+                                     ? conf[name]
+                                     : options_config[name].value );
         }
     }
-    // save the widgets for later (in save_options)
-    state.widgets = widgets;
 }
 
 // Add the widget specified to the table and return it.
@@ -77,5 +82,6 @@ function save_options(evt) {
             }, 750);
 }
 
-$(document).ready(restore_options);
-$('#save').on('click', save_options);
+$(document).ready(function(){ restore_options(read_options()); });
+$('button#save').on('click', save_options);
+$('button#defaults').on('click', function(){ restore_options(); });
