@@ -60,9 +60,9 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
     });
     // optionally filter some nodes
     if(!options.opt_showsingletons){
-      var graph = filter_singletons_index({nodes:nodes, links:links});
-      nodes = graph.nodes;
-      links = graph.links;
+      var graph = filter_singletons_index({n:nodes, e:links});
+      nodes = graph.n;
+      links = graph.e;
     }
   }).then(function(){
     showGraph();
@@ -87,15 +87,15 @@ function filter_singletons_id(g_by_id){
     var seen = {},
         newnodes = null;
     // take note of nodes which appear in the links
-    g_by_id.links.forEach(function(link){
+    g_by_id.e.forEach(function(link){
             seen[link.source] = true;
             seen[link.target] = true;
             });
     // filter nodes which weren't seen
-    newnodes = nodes.filter(function(node){
+    newnodes = g_by_id.n.filter(function(node){
             return seen[node.history_id];
             });
-    return {nodes:newnodes, links:g_by_id.links};
+    return {n:newnodes, e:g_by_id.e};
 }
 
 function shallow_copy(obj){
@@ -113,13 +113,13 @@ function shallow_copy(obj){
 // -> A graph which references into the 'nodes' using node.history_id.
 function by_history_id(g_by_index){
     // switch link references on each link
-    var newlinks = g_by_index.links.map(function(link){
+    var newlinks = g_by_index.e.map(function(link){
             var newlink = shallow_copy(link);
-            newlink.source = g_by_index.nodes[link.source].history_id;
-            newlink.target = g_by_index.nodes[link.target].history_id;
+            newlink.source = g_by_index.n[link.source].history_id;
+            newlink.target = g_by_index.n[link.target].history_id;
             return newlink;
             });
-    return {nodes:g_by_index.nodes, links:newlinks};
+    return {n:g_by_index.n, e:newlinks};
 }
 
 // Assume that node.history_id is at least as unique as node array-indexes.
@@ -130,7 +130,7 @@ function by_index(g_by_id){
         by_history_id = {},
         history_id_ct = 0;
     // create a map from history_id to nodes
-    g_by_id.nodes.forEach(function(node, index){
+    g_by_id.n.forEach(function(node, index){
             node.array_index = index;
             by_history_id[node.history_id] = node;
             });
@@ -141,19 +141,20 @@ function by_index(g_by_id){
         }
     }
     // check that history_id are unique
-    if(g_by_id.nodes.length != history_id_ct){
+    if(g_by_id.n.length != history_id_ct){
         throw "node.history_id aren't unique";
     }
     // switch link references on each link
-    newlinks = g_by_id.links.map(function(link){
+    newlinks = g_by_id.e.map(function(link){
             var newlink = shallow_copy(link);
             newlink.source = by_history_id[link.source].array_index;
             newlink.target = by_history_id[link.target].array_index;
-            delete by_history_id[link.source].array_index;
-            delete by_history_id[link.target].array_index;
             return newlink;
             });
-    return {nodes:g_by_id.nodes, links:newlinks};
+    g_by_id.n.forEach(function(node){
+            delete node.array_index;
+            });
+    return {n:g_by_id.n, e:newlinks};
 }
 
 function showGraph() {
