@@ -1,3 +1,5 @@
+var options = read_options();
+
 var svg, w, h, force;
 
 var nodes = [];
@@ -6,10 +8,10 @@ var all_visits = {};
 var history_items = {};
 
 var conf = {
-  charge: -70,
-  distance: 25,
-  linkMinDarkness: 0.5,
-  nodeRadius: 5
+  charge:           options.conf_charge,
+  distance:         options.conf_distance,
+  linkMinDarkness:  options.conf_linkmindark,
+  nodeRadius:       options.conf_noderadius
 };
 
 chrome.history.search({text: "", maxResults: 0}, function (history_pages){
@@ -56,6 +58,12 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
         }
       } catch (e) {}
     });
+    // optionally filter some nodes
+    if(!options.opt_showsingletons){
+      var graph = filter_singletons_index({nodes:nodes, links:links});
+      nodes = graph.nodes;
+      links = graph.links;
+    }
   }).then(function(){
     showGraph();
     // load the translate/scale if any
@@ -64,6 +72,89 @@ chrome.history.search({text: "", maxResults: 0}, function (history_pages){
     });
   });
 });
+
+// Filter out the singletons in a graph.
+// :: A graph which references into the 'nodes' using indexes.
+// -> A graph which references into the 'nodes' using indexes.
+function filter_singletons_index(g_by_index){
+    return by_index(filter_singletons_id(by_history_id(g_by_index)));
+}
+
+// Filter out the singletons in a graph.
+// :: A graph which references into the 'nodes' using node.history_id.
+// -> A graph which references into the 'nodes' using node.history_id.
+function filter_singletons_id(g_by_id){
+    var seen = {},
+        newnodes = null;
+    // take note of nodes which appear in the links
+    g_by_id.links.forEach(function(link){
+            seen[link.source] = true;
+            seen[link.target] = true;
+            });
+    // filter nodes which weren't seen
+    newnodes = nodes.filter(function(node){
+            return seen[node.history_id];
+            });
+    return {nodes:newnodes, links:g_by_id.links};
+}
+
+function shallow_copy(obj){
+    var newobj = {};
+    for(var k in obj){
+        if(obj.hasOwnProperty(k)){
+            newobj[k] = obj[k];
+        }
+    }
+    return newobj;
+}
+
+// Assume that node.history_id is at least as unique as node array-indexes.
+// :: A graph which references into the 'nodes' array using indexes.
+// -> A graph which references into the 'nodes' using node.history_id.
+function by_history_id(g_by_index){
+    // switch link references on each link
+    var newlinks = g_by_index.links.map(function(link){
+            var newlink = shallow_copy(link);
+            newlink.source = g_by_index.nodes[link.source].history_id;
+            newlink.target = g_by_index.nodes[link.target].history_id;
+            return newlink;
+            });
+    return {nodes:g_by_index.nodes, links:newlinks};
+}
+
+// Assume that node.history_id is at least as unique as node array-indexes.
+// :: A graph which references into the 'nodes' using node.history_id.
+// -> A graph which references into the 'nodes' array using indexes.
+function by_index(g_by_id){
+    var newlinks = null,
+        by_history_id = {},
+        history_id_ct = 0;
+    // create a map from history_id to nodes
+    g_by_id.nodes.forEach(function(node, index){
+            node.array_index = index;
+            by_history_id[node.history_id] = node;
+            });
+    // count the number of things in the map
+    for(var id in by_history_id){
+        if(by_history_id.hasOwnProperty(id)){
+            history_id_ct += 1;
+        }
+    }
+    // check that history_id are unique
+    if(g_by_id.nodes.length != history_id_ct){
+        throw "node.history_id aren't unique";
+    }
+    // switch link references on each link
+    newlinks = g_by_id.links.map(function(link){
+            var newlink = shallow_copy(link);
+            newlink.source = by_history_id[link.source].array_index;
+            newlink.target = by_history_id[link.target].array_index;
+            delete by_history_id[link.source].array_index;
+            delete by_history_id[link.target].array_index;
+            return newlink;
+            });
+    return {nodes:g_by_id.nodes, links:newlinks};
+}
 
 function showGraph() {
   w = $(window).width();
