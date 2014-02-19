@@ -3,7 +3,7 @@
 options_config = { conf_charge:        {widget:'RangeWidget', value:-70  , label:'Charge',                min: -200, max:0,   step:5   }
                  , conf_distance:      {widget:'RangeWidget', value: 25  , label:'Distance' ,             min: 0,    max:100, step:5   }
                  , conf_linkmindark:   {widget:'RangeWidget', value:  0.5, label:'Link Minimum Darkness', min: 0,    max:1,   step:0.05}
-                 , conf_noderadius:    {widget:'RangeWidget', value:  5  , label:'Node Radius',           min: 0,    max:100, step:5   }
+                 , conf_noderadius:    {widget:'RangeWidget', value:  5  , label:'Node Radius',           min: 0,    max:20,  step:0.5 }
                  , opt_showsingletons: {widget:'BoolWidget' , value: true, label:'Show unlinked Nodes?'                                }
                  };
 
