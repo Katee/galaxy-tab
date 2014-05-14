@@ -9,5 +9,6 @@
   "permissions": [
     "history",
     "storage"
-  ]
+  ],
+  "options_page": "options.html"
 }
