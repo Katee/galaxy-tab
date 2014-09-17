@@ -17,4 +17,4 @@ Clone the repository and load it as an unpacked extension in Chrome per [Google'
 
 ## Known Issues
 
-When links are opened in a new tab are not shown as connected.
+When links are opened in a new tab they are not shown as connected.
