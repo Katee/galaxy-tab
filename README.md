@@ -8,8 +8,8 @@ Shows your Chrome browsing history as a graph where each page is a node. Links a
 
 You can remove singletons from the graph and adjust force parameters.
 
-![options page](https://raw.github.com/Katee/galaxy-tab/options/screenshot-options.png)
-![modified behavior](https://raw.github.com/Katee/galaxy-tab/options/screenshot-nosingles.png)
+![options page](https://raw.github.com/Katee/galaxy-tab/master/screenshot-options.png)
+![modified behavior](https://raw.github.com/Katee/galaxy-tab/master/screenshot-nosingles.png)
 
 ## Usage
 
