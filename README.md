@@ -1,8 +1,10 @@
 # History Graph
 
-Shows your Chrome browsing history as a graph where each page is a node. Links are shown connecting pages you visited from another. Nodes are colored based on the domain.
+View your Chrome browsing history like this:
 
 ![Screenshot](https://raw.github.com/Katee/galaxy-tab/master/screenshot.png)
+
+Each dot is a page and connections are created between pages if you visited one from another. The color of a dot is based on the domain.
 
 ## Options
 
