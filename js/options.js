@@ -82,6 +82,9 @@ function save_options(evt) {
             }, 750);
 }
 
-$(document).ready(function(){ restore_options(read_options()); });
-$('button#save').on('click', save_options);
-$('button#defaults').on('click', function(){ restore_options(); });
+$(document).ready(function(){
+  restore_options(read_options());
+
+  $('button#save').on('click', save_options);
+  $('button#defaults').on('click', restore_options);
+});
