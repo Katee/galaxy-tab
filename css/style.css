@@ -46,6 +46,29 @@ line.link {
 .tipsy-e .tipsy-arrow { right: 0; top: 50%; margin-top: -5px; border-left-style: solid; border-right: none; border-top-color: transparent; border-bottom-color: transparent; }
 .tipsy-w .tipsy-arrow { left: 0; top: 50%; margin-top: -5px; border-right-style: solid; border-left: none; border-top-color: transparent; border-bottom-color: transparent; }
 
-#options-page button#defaults{
-  margin-top: 3em;
+#options-page body {
+  width: auto;
+  line-height: 1.5;
+  margin: 0 auto;
+  display: table;
+}
+
+#options-page .options-container {
+  display: table-cell;
+  vertical-align: middle;
+  max-width: 34em;
+  padding: 1em;
+}
+
+#options-page .form-actions {
+  margin-top: 1em;
+}
+
+#options-page #status {
+  min-height: 1.5em;
+}
+
+#options-page output {
+  width: 3em;
+  display: inline-block;
 }
